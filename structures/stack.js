@@ -25,7 +25,6 @@ class Stack {
 
   pop() {
     if (!this.first) return undefined;
-    // console.log(this.first);
     let currentFirst = this.first;
     this.first = currentFirst.next;
     this.size--;
