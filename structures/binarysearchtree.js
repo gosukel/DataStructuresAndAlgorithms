@@ -1,3 +1,5 @@
+import { QNode, Queue } from "./queue.js";
+
 class Node {
   constructor(val) {
     this.val = val;
@@ -36,6 +38,16 @@ class BinarySearchTree {
     return inserted(val);
   }
 
+  // ------  FOR TESTING -------
+  fillTree() {
+    let values = [10, 6, 15, 3, 8, 20];
+    for (let val of values) {
+      this.insert(val);
+    }
+    console.log("items inserted");
+  }
+  // ---------------------------
+
   find(val, current = this.root) {
     if (current === null) return false;
     if (current.val === val) return true;
@@ -45,4 +57,25 @@ class BinarySearchTree {
       return this.find(val, current.right);
     }
   }
+
+  breadthFirstSearch() {
+    const queue = new Queue();
+    const data = [];
+    let node = this.root;
+    queue.enqueue(node);
+    while (queue.size > 0) {
+      node = queue.dequeue().val;
+      data.push(node.val);
+      console.log(node);
+      if (node.left) queue.enqueue(node.left);
+      if (node.right) queue.enqueue(node.right);
+    }
+    return data;
+  }
 }
+
+// -------------- TESTING CODE ------------
+let tree = new BinarySearchTree();
+tree.fillTree();
+let vals = tree.breadthFirstSearch();
+console.log(vals);

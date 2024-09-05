@@ -1,11 +1,11 @@
-class Node {
+export class QNode {
   constructor(val) {
     this.val = val;
     this.next = null;
   }
 }
 
-class Queue {
+export class Queue {
   constructor() {
     this.first = null;
     this.last = null;
@@ -23,7 +23,7 @@ class Queue {
   }
 
   enqueue(val) {
-    let newNode = new Node(val);
+    let newNode = new QNode(val);
     if (!this.first) {
       [this.first, this.last] = [newNode, newNode];
     } else {
