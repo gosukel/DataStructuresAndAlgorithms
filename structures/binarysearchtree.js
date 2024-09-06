@@ -39,8 +39,7 @@ class BinarySearchTree {
   }
 
   // ------  FOR TESTING -------
-  fillTree() {
-    let values = [10, 6, 15, 3, 8, 20];
+  fillTree(values = [1, 2, 3, 4, 5, 6]) {
     for (let val of values) {
       this.insert(val);
     }
@@ -66,16 +65,66 @@ class BinarySearchTree {
     while (queue.size > 0) {
       node = queue.dequeue().val;
       data.push(node.val);
-      console.log(node);
       if (node.left) queue.enqueue(node.left);
       if (node.right) queue.enqueue(node.right);
     }
     return data;
+  }
+
+  DFSPreOrder() {
+    if (!this.root) return undefined;
+    let values = [];
+    const traverse = (node) => {
+      values.push(node.val);
+      if (node.left) traverse(node.left);
+      if (node.right) traverse(node.right);
+    };
+
+    traverse(this.root);
+    return values;
+  }
+
+  DFSInOrder() {
+    if (!this.root) return undefined;
+    let values = [];
+    const traverse = (node) => {
+      if (node.left) traverse(node.left);
+      values.push(node.val);
+      if (node.right) traverse(node.right);
+    };
+
+    traverse(this.root);
+    return values;
+  }
+
+  DFSPostOrder() {
+    if (!this.root) return undefined;
+    let values = [];
+    const traverse = (node) => {
+      if (node.left) traverse(node.left);
+      if (node.right) traverse(node.right);
+      values.push(node.val);
+    };
+
+    traverse(this.root);
+    return values;
+  }
+
+  balanceBST() {
+    let vals = this.DFSInOrder();
+    let mid = Math.floor(vals.length / 2);
+    let head = new Node(vals[mid]);
+    let left = vals.slice(0, mid);
+    let right = vals.slice(mid + 1);
+    let newVals = [...left, ...right];
+    this.root = head;
+    this.fillTree(newVals);
   }
 }
 
 // -------------- TESTING CODE ------------
 let tree = new BinarySearchTree();
 tree.fillTree();
-let vals = tree.breadthFirstSearch();
-console.log(vals);
+console.log(tree.DFSPreOrder());
+tree.balanceBST();
+console.log(tree.breadthFirstSearch());
