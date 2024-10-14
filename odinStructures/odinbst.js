@@ -154,13 +154,25 @@ class OdinBST {
     return values;
   }
 
-  height(val = this.root.value) {
+  valHeight(val = this.root.value) {
     let height;
     let node = this.findNode(val);
     function checkHeight(node) {
       if (node === null) return -1;
       let left = checkHeight(node.left);
       let right = checkHeight(node.right);
+      return Math.max(left, right) + 1;
+    }
+    height = checkHeight(node);
+    return height;
+  }
+
+  nodeHeight(node = this.root) {
+    let height;
+    function checkHeight(n) {
+      if (n === null) return -1;
+      let left = checkHeight(n.left);
+      let right = checkHeight(n.right);
       return Math.max(left, right) + 1;
     }
     height = checkHeight(node);
@@ -181,6 +193,28 @@ class OdinBST {
     }
     depth = checkDepth(val, node);
     return depth;
+  }
+
+  isBalanced(node = this.root) {
+    if (node === null) return true;
+    let leftHeight = this.nodeHeight(node.left);
+    let rightHeight = this.nodeHeight(node.right);
+
+    if (Math.abs(rightHeight - leftHeight) > 1) return false;
+
+    let left = this.isBalanced(node.left);
+    let right = this.isBalanced(node.right);
+
+    if (!left || !right) return false;
+
+    return true;
+  }
+
+  selfBalance() {
+    let vals = this.inOrder();
+    this.root = null;
+    this.buildTree(vals);
+    return this.isBalanced();
   }
 
   prepValues() {
@@ -220,8 +254,34 @@ class OdinBST {
   }
 }
 
-let test = [1, 7, 3, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
-let newTree = new OdinBST();
-newTree.buildTree();
-newTree.prettyPrint();
-console.log(newTree.depth(324));
+// TEST FUNCTION
+function testDrive() {
+  function getVals() {
+    let vals = [];
+    let x;
+    for (let i = 0; i < 50; i++) {
+      x = Math.floor(Math.random() * 1000) + 1;
+      vals.push(x);
+    }
+    return vals;
+  }
+  let vals = getVals();
+  let sortedVales = mergeSort(vals);
+  let newTree = new OdinBST();
+  newTree.buildTree(sortedVales);
+  console.log(newTree.isBalanced());
+  newTree.prettyPrint();
+  console.log(newTree.inOrder());
+  console.log(newTree.postOrder());
+  console.log(newTree.levelOrder());
+  newTree.insert(1005);
+  newTree.insert(1006);
+  newTree.insert(1007);
+  newTree.insert(1008);
+  newTree.insert(1009);
+  newTree.prettyPrint();
+  console.log(newTree.isBalanced());
+  console.log(newTree.inOrder());
+  console.log(newTree.postOrder());
+  console.log(newTree.levelOrder());
+}
