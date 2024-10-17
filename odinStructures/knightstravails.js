@@ -1,3 +1,5 @@
+import { PriorityQueue, Node } from "./odinpriorityqueue.js";
+
 class Graph {
   constructor() {
     this.adjacencyList = {};
@@ -115,10 +117,70 @@ class Graph {
       this.adjacencyList[v2].push(v1);
     }
   }
+
+  shortestPath(start, end) {
+    // CHECK FOR VALID INPUTS
+    if (start === end) {
+      console.log("start and end must be different");
+      return;
+    }
+    if (!this.adjacencyList[start] || !this.adjacencyList[end]) {
+      console.log("invalid start or end");
+      return;
+    }
+
+    // INITIALIZE NECESSARY VARIABLES
+    let nodes = new PriorityQueue();
+    let distanceTable = {};
+    let smallest;
+    let path = [];
+    for (let vertex in this.adjacencyList) {
+      if (vertex === start) {
+        distanceTable[vertex] = {
+          distance: 0,
+          previous: "",
+        };
+      } else {
+        distanceTable[vertex] = {
+          distance: Infinity,
+          previous: "",
+        };
+      }
+      nodes.enqueue(vertex, distanceTable[vertex]["distance"]);
+    }
+
+    // BEGIN SEARCH
+    while (nodes.values.length) {
+      smallest = nodes.dequeue().value;
+      // CHECK FOR REQUIREMENT MET & BREAK LOOP
+      if (smallest === end && distanceTable[smallest].distance < Infinity) {
+        while (distanceTable[smallest] || smallest === start) {
+          path.push(smallest);
+          smallest = distanceTable[smallest].previous;
+        }
+        break;
+      }
+      // UPDATE DISTANCE VALUES + REQUEUE LOCATION
+      if (smallest || distanceTable[smallest].distance !== Infinity) {
+        for (let nextMove of this.adjacencyList[smallest]) {
+          let candidate = distanceTable[smallest].distance + 1;
+          if (candidate < distanceTable[nextMove].distance) {
+            distanceTable[nextMove].distance = candidate;
+            distanceTable[nextMove].previous = smallest;
+            nodes.enqueue(nextMove, candidate);
+          }
+        }
+      }
+    }
+    // FORMAT & RETURN SHORTEST PATH
+    let finalPath = path.reverse();
+    console.log(finalPath);
+    return finalPath;
+  }
 }
 
 let newBoard = new Graph();
+
 newBoard.makeBoard();
-console.log(newBoard);
 newBoard.addKnightMoves();
-console.log(newBoard);
+newBoard.shortestPath("a1", "h8");
